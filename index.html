@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Um ano com você</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --noite:#1b0f26; --vinho:#3a1735; --rosa:#ff6f91; --ouro:#ffc98b; --lavanda:#b8a4ff; --creme:#fff1e6;
+  --papel:#fbefe0; --tinta:#3b2433;
+  --pixel:"Pixelify Sans",ui-monospace,monospace; --serif:"Fraunces",Georgia,serif;
+}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font-family:var(--serif);color:var(--creme);background:
+  radial-gradient(900px 500px at 80% -10%,#6a2b5f66,transparent),
+  radial-gradient(700px 500px at 0% 110%,#ff6f9122,transparent),var(--noite);
+  overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--ouro);outline-offset:3px}
+
+/* corações flutuando ao fundo */
+.fundo{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.fundo i{position:absolute;bottom:-40px;font-style:normal;color:var(--rosa);opacity:.0;animation:subir linear infinite}
+@keyframes subir{0%{transform:translateY(0) rotate(-8deg);opacity:0}10%{opacity:.35}100%{transform:translateY(-110vh) rotate(12deg);opacity:0}}
+
+.tela{position:relative;z-index:1;min-height:100%;display:none;padding:24px 20px 56px}
+.tela.ativa{display:block}
+
+/* HUD */
+.hud{display:flex;justify-content:space-between;gap:12px;font-family:var(--pixel);font-size:1rem;max-width:960px;margin:0 auto}
+.hud span{padding:6px 12px;border:2px solid var(--lavanda);background:#1b0f26cc;color:var(--lavanda)}
+.hud b{color:var(--ouro);font-weight:600}
+
+/* menu inicial */
+.menu{max-width:520px;margin:9vh auto 0;text-align:center}
+.menu h1{font-weight:600;font-size:clamp(2.6rem,9vw,4.6rem);line-height:1.02;letter-spacing:-.02em}
+.menu h1 em{display:block;font-weight:400;color:var(--rosa)}
+.menu p.datas{font-family:var(--pixel);margin:18px 0 44px;color:var(--ouro);font-size:1.1rem}
+.opcoes{display:grid;gap:16px}
+.op{position:relative;padding:20px 24px;font-family:var(--pixel);font-size:1.5rem;background:#3a173599;
+  border:2px solid #ffffff30;transition:transform .15s,background .15s,border-color .15s}
+.op::before,.op::after{content:"";position:absolute;width:14px;height:14px;border:3px solid var(--ouro);transition:.15s}
+.op::before{top:-5px;left:-5px;border-right:0;border-bottom:0}
+.op::after{bottom:-5px;right:-5px;border-left:0;border-top:0}
+.op:hover,.op:focus-visible{background:#ff6f9133;border-color:var(--rosa);transform:translateX(6px)}
+.op:hover::before,.op:focus-visible::before{top:-9px;left:-9px}
+.op:hover::after,.op:focus-visible::after{bottom:-9px;right:-9px}
+.op small{display:block;font-size:.95rem;color:#ffffffa0;margin-top:4px}
+.op .cora{color:var(--rosa);margin-right:8px;opacity:0}
+.op:hover .cora,.op:focus-visible .cora{opacity:1}
+.rodape{margin-top:36px;font-family:var(--pixel);color:#ffffff80;font-size:.95rem}
+
+/* topo das telas internas */
+.topo{max-width:1000px;margin:0 auto 22px;display:flex;align-items:center;gap:16px}
+.voltar{font-family:var(--pixel);padding:8px 14px;border:2px solid var(--lavanda);color:var(--lavanda)}
+.voltar:hover{background:var(--lavanda);color:var(--noite)}
+.topo h2{font-weight:400;font-style:italic;font-size:1.8rem}
+
+/* galeria */
+.grade{max-width:1000px;margin:0 auto;columns:3 240px;column-gap:14px}
+.grade button{display:block;width:100%;margin:0 0 14px;padding:8px 8px 8px;background:var(--papel);
+  box-shadow:0 8px 24px #0006;transition:transform .2s}
+.grade button:nth-child(odd){transform:rotate(-1.2deg)}
+.grade button:nth-child(even){transform:rotate(1deg)}
+.grade button:hover{transform:rotate(0) scale(1.03);position:relative;z-index:2}
+.grade img{display:block;width:100%;height:auto}
+.lightbox{position:fixed;inset:0;z-index:10;background:#0c0612ee;display:none;align-items:center;justify-content:center;padding:20px}
+.lightbox.aberta{display:flex}
+.lightbox img{max-width:min(92vw,1100px);max-height:86vh;border:8px solid var(--papel)}
+.lightbox button{position:absolute;font-family:var(--pixel);font-size:1.6rem;padding:10px 16px;color:var(--creme);background:#3a1735}
+.lb-x{top:14px;right:14px}.lb-p{left:10px;top:50%}.lb-n{right:10px;top:50%}
+.lb-c{position:absolute;bottom:14px;font-family:var(--pixel);color:var(--ouro)}
+
+/* carta */
+.envelope{display:block;margin:12vh auto 0;width:min(340px,86vw);aspect-ratio:1.45;position:relative;
+  background:linear-gradient(160deg,#ffd9b8,#ffc08e);box-shadow:0 20px 50px #0008;animation:flutuar 3s ease-in-out infinite}
+.envelope::before{content:"";position:absolute;inset:0;background:linear-gradient(to bottom right,transparent 49.5%,#00000018 50%) , linear-gradient(to bottom left,transparent 49.5%,#00000018 50%);
+  clip-path:polygon(0 0,100% 0,50% 58%)}
+.envelope span{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);font-size:2.4rem;color:var(--rosa);filter:drop-shadow(0 2px 0 #0003)}
+.envelope-dica{text-align:center;margin-top:26px;font-family:var(--pixel);color:var(--ouro)}
+@keyframes flutuar{50%{transform:translateY(-8px)}}
+.papel{display:none;max-width:680px;margin:0 auto;background:var(--papel);color:var(--tinta);
+  box-shadow:0 24px 60px #000a;animation:abrir .8s cubic-bezier(.2,.8,.2,1) both}
+.papel.aberta{display:block}
+@keyframes abrir{from{opacity:0;transform:translateY(40px) scale(.96)}to{opacity:1;transform:none}}
+.player{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--vinho);color:var(--creme)}
+.player button{flex:none;width:46px;height:46px;border-radius:50%;background:var(--rosa);color:var(--noite);font-size:1.2rem}
+.player button:hover{background:var(--ouro)}
+.player .info{flex:1;min-width:0;font-family:var(--pixel)}
+.player .info b{display:block;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player .info small{color:#ffffffa0}
+.barra{height:6px;background:#ffffff30;margin:6px 0 2px;cursor:pointer;position:relative}
+.barra div{height:100%;width:0;background:var(--ouro)}
+.corpo{padding:clamp(24px,6vw,54px);font-size:1.15rem;line-height:1.75;max-width:62ch;margin:0 auto}
+.corpo h3{font-weight:400;font-style:italic;font-size:1.9rem;margin-bottom:22px;color:#8a2a4d}
+.corpo p{margin-bottom:1.1em}
+.corpo .assina{margin-top:30px;text-align:right;font-style:italic;font-size:1.3rem;color:#8a2a4d}
+.aviso{display:none;padding:8px 18px;background:#ffe3b8;color:#6b3a10;font-family:var(--pixel);font-size:.95rem}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:480px){.hud{font-size:.85rem}.op{font-size:1.25rem}}
+</style>
+</head>
+<body>
+<div class="fundo" id="fundo" aria-hidden="true"></div>
+
+<!-- TELA INICIAL -->
+<main class="tela ativa" id="inicio">
+  <div class="hud">
+    <span>♥ <b id="nomeA"></b> &amp; <b id="nomeB"></b></span>
+  </div>
+  <section class="menu">
+    <h1>Um ano<em>com você</em></h1>
+    <nav class="opcoes">
+      <button class="op" data-ir="galeria"><span class="cora">♥</span>Nossa galeria<small>as fotos que guardamos</small></button>
+      <button class="op" data-ir="carta"><span class="cora">♥</span>Abrir a carta<small>escrita pra você</small></button>
+    </nav>
+    <p class="rodape">abra com um pouco de volume pra escutar a musica</p>
+  </section>
+</main>
+
+<!-- GALERIA -->
+<section class="tela" id="galeria">
+  <div class="topo"><button class="voltar" data-ir="inicio">‹ Voltar</button><h2>Nossa galeria</h2></div>
+  <div class="grade" id="grade"></div>
+</section>
+<div class="lightbox" id="lb" role="dialog" aria-label="Foto ampliada">
+  <button class="lb-x" id="lbX" aria-label="Fechar">✕</button>
+  <button class="lb-p" id="lbP" aria-label="Foto anterior">‹</button>
+  <img id="lbImg" alt="">
+  <button class="lb-n" id="lbN" aria-label="Próxima foto">›</button>
+  <div class="lb-c" id="lbC"></div>
+</div>
+
+<!-- CARTA -->
+<section class="tela" id="carta">
+  <div class="topo"><button class="voltar" data-ir="inicio">‹ Voltar</button></div>
+  <button class="envelope" id="envelope" aria-label="Abrir a carta"><span>♥</span></button>
+  <p class="envelope-dica" id="dica">Toque no envelope para abrir</p>
+
+  <article class="papel" id="papel">
+    <div class="player">
+      <button id="play" aria-label="Tocar música">▶</button>
+      <div class="info">
+        <b>JVKE – her (feat. Annika Wells &amp; Kaden Hawke)</b>
+        <div class="barra" id="barra"><div id="prog"></div></div>
+        <small id="tempo">0:00</small>
+      </div>
+    </div>
+    <div class="aviso" id="aviso">Falta o arquivo da música: coloque-o em musica/her.mp3</div>
+
+    <!-- ✏️ EDITE A CARTA AQUI. Cada <p> é um parágrafo. -->
+    <div class="corpo">
+      <h3>Meu amor, Feliz 1 ano de namoro!</h3>
+      <h3>Meu amor, feliz 1 ano de namoro!</h3>
+      <p>Hoje faz um ano que a gente começou essa história, e eu ainda procuro as palavras certas para dizer o quanto você mudou os meus dias, meus meses e o meu ano. Você é o meu sol, o meu abrigo, o meu lugar de paz, a minha vida...</p>
+      <p>Obrigado por cada risada, por cada abraço, por cada vez que você ficou do meu lado quando eu mais precisei. Todos esses dias estão e sempre estarão na minha cabeça. Em um ano, você mudou totalmente a minha vida, afastou a solidão do meu coração, tirou os meus dias nublados e, além de tudo, me fez pela primeira vez na vida não me sentir só. Eu nunca vou me esquecer daquele dia em que você disse que eu não precisava mais ficar sozinho. Eu te amo do fundo do meu coração.
+         Você é o meu motivo de viver e de acordar todos os dias, eu te amo desde que acordo até a hora de dormir. Você me inspira a ser uma boa pessoa, você me mudou e me muda, e eu jamais serei capaz de demonstrar o quanto eu te amo e te admiro com toda a minha força. Você foi o meu primeiro AMOR de verdade, me fez aprender o que é amar e me mostra, hoje em dia, como eu mereço ser amado.
+         E eu não quero nada além disso: quero ser amado, admirado e adorado unicamente por você, até o resto da minha vida. Eu te amo tanto! Você faz o meu coração se acalmar, bater mais rápido e, ao mesmo tempo, se derreter. Por você, eu enfrentaria qualquer coisa, viveria, seria uma pessoa melhor, e por você eu tento todos os dias e espero conseguir ser a pessoa que você merece.</p>
+      <p>Eu amo tudo em você: a sua pele, as suas unhas, o seu cabelo cacheado, de quem eu tenho tanto ciúme, os seus dedos, os seus braços, as suas pernas. Eu amo você inteirinha, dos pés à cabeça. Amo a sua risada, as suas brincadeiras, o jeito como você fica manhosa, o jeito que você olha para mim... Eu sinto que poderia me perder dentro do seu olhar. Eu amo a sua personalidade inteira, os seus defeitos e as suas qualidades. <strong>Eu te amo.</strong></p>
+      <p>Eu lembro de tudo: do nosso primeiro encontro, que foi na ilha, no evento de anime; do nosso primeiro beijo, que foi na escola; do dia em que eu te pedi em namoro na igreja da Ilha de Santana; do seu aniversário, que você passou em casa; dos nossos encontros em lugares bons; das vezes em que fomos atrás da escola comprar coisas; dos recreios em que a gente fica abraçado... Todos esses momentos sempre estarão na minha cabeça. E o dia em que eu soube que seria para sempre foi o dia em que você me abraçou enquanto estávamos na sua sala, à tarde, e disse que eu nunca mais ia precisar ficar sozinho. Esse dia me marcou e me marca até hoje. Obrigado por me proporcionar histórias e momentos tão incríveis como esses que nós vivemos, obrigado por me escolher, obrigado por existir na minha vida, obrigado por esse ano, obrigado por ser você, obrigado por ser a minha namorada, obrigado por ser o meu mundo, obrigado por ser o meu tudo.</p>
+      <p>Eu sei que nós tivemos os nossos problemas e que eu sou uma pessoa difícil às vezes, mas saiba que eu te amo e sempre vou estar ao seu lado. Nenhum dia desse ano eu deixei de pensar em você. Eu quero ser o seu porto seguro, assim como você é o meu. Quero também pedir desculpas pelas vezes em que eu te magoei e dizer que sempre vou tentar ser melhor por você. Espero que a gente passe por todos os desafios juntos e continue sendo esse casal feliz, se amando mais a cada dia.</p>
+      <p>Eu não sei o que o futuro guarda, mas sei com quem eu quero passar todos os meus dias. A minha vida e o meu coração são seus desde o dia 23/11/2025 até o dia em que a morte nos separar. Todos os dias eu agradeço e rezo para que a gente continue sendo esse casal feliz, apesar de tudo o que a gente passa. E mesmo nos momentos em que estou mais triste, eu lembro de você. Feliz um ano, meu amor. <strong>EU TE AMO MUITO!</strong></p>
+      <p class="assina">Com todo o meu carinho, amor e paixão,<br><span id="assinatura"></span></p>
+    </div>
+  </article>
+</section>
+
+<script>
+
+const CONFIG = {
+  nomeDela: "Jiliane",
+  nomeDele: "Rafael",
+  inicio: new Date(2025, 11, 23),      // 23/12/2025 (mês começa em 0)
+  aniversario: new Date(2026, 11, 23), // 23/12/2026
+  totalFotos: 13,
+  musica: "musica/her.mp3"
+};
+
+const $ = s => document.querySelector(s);
+$("#nomeA").textContent = CONFIG.nomeDele;
+$("#nomeB").textContent = CONFIG.nomeDela;
+$("#assinatura").textContent = CONFIG.nomeDele;
+
+/* corações do fundo */
+(() => {
+  const f = $("#fundo");
+  for (let i = 0; i < 14; i++) {
+    const h = document.createElement("i");
+    h.textContent = "♥";
+    h.style.left = Math.random() * 100 + "%";
+    h.style.fontSize = 12 + Math.random() * 22 + "px";
+    h.style.animationDuration = 12 + Math.random() * 14 + "s";
+    h.style.animationDelay = -Math.random() * 20 + "s";
+    f.appendChild(h);
+  }
+})();
+
+/* navegação entre telas */
+function ir(nome) {
+  document.querySelectorAll(".tela").forEach(t => t.classList.toggle("ativa", t.id === nome));
+  if (nome !== "carta") pausar();
+  window.scrollTo(0, 0);
+  history.replaceState(null, "", nome === "inicio" ? location.pathname : "#" + nome);
+}
+document.addEventListener("click", e => { const b = e.target.closest("[data-ir]"); if (b) ir(b.dataset.ir); });
+if (["#galeria", "#carta"].includes(location.hash)) ir(location.hash.slice(1));
+
+/* setas no menu */
+document.addEventListener("keydown", e => {
+  if (!$("#inicio").classList.contains("ativa") || !["ArrowDown", "ArrowUp"].includes(e.key)) return;
+  const ops = [...document.querySelectorAll(".op")], i = ops.indexOf(document.activeElement);
+  const n = e.key === "ArrowDown" ? (i + 1) % ops.length : (i - 1 + ops.length) % ops.length;
+  ops[i < 0 ? 0 : n].focus(); e.preventDefault();
+});
+
+/* galeria */
+const fotos = Array.from({ length: CONFIG.totalFotos }, (_, i) => `fotos/foto${String(i + 1).padStart(2, "0")}.jpg`);
+fotos.forEach((src, i) => {
+  const b = document.createElement("button");
+  b.innerHTML = `<img src="${src}" alt="Foto ${i + 1} do casal" loading="lazy">`;
+  b.onclick = () => abrir(i);
+  $("#grade").appendChild(b);
+});
+let atual = 0;
+function abrir(i) {
+  atual = (i + fotos.length) % fotos.length;
+  $("#lbImg").src = fotos[atual];
+  $("#lbC").textContent = `${atual + 1} / ${fotos.length}`;
+  $("#lb").classList.add("aberta");
+}
+const fechar = () => $("#lb").classList.remove("aberta");
+$("#lbX").onclick = fechar; $("#lbP").onclick = () => abrir(atual - 1); $("#lbN").onclick = () => abrir(atual + 1);
+$("#lb").onclick = e => { if (e.target.id === "lb") fechar(); };
+document.addEventListener("keydown", e => {
+  if (!$("#lb").classList.contains("aberta")) return;
+  if (e.key === "Escape") fechar();
+  if (e.key === "ArrowLeft") abrir(atual - 1);
+  if (e.key === "ArrowRight") abrir(atual + 1);
+});
+
+/* carta + música */
+const audio = new Audio(CONFIG.musica);
+audio.loop = true; audio.preload = "auto";
+const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+function tocar() { audio.play().then(() => $("#play").textContent = "❚❚").catch(() => $("#aviso").style.display = "block"); }
+function pausar() { audio.pause(); $("#play").textContent = "▶"; }
+audio.addEventListener("error", () => $("#aviso").style.display = "block");
+audio.addEventListener("timeupdate", () => {
+  $("#prog").style.width = (audio.currentTime / (audio.duration || 1)) * 100 + "%";
+  $("#tempo").textContent = `${fmt(audio.currentTime)} / ${isNaN(audio.duration) ? "0:00" : fmt(audio.duration)}`;
+});
+$("#play").onclick = () => audio.paused ? tocar() : pausar();
+$("#barra").onclick = e => { const r = e.currentTarget.getBoundingClientRect(); if (audio.duration) audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration; };
+$("#envelope").onclick = () => {
+  $("#envelope").style.display = "none"; $("#dica").style.display = "none";
+  $("#papel").classList.add("aberta");
+  tocar();
+};
+</script>
+</body>
+</html>
